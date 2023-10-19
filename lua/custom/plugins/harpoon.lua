@@ -9,21 +9,19 @@ return {
         local mark = require 'harpoon.mark'
         local ui = require 'harpoon.ui'
 
-        -- stylua: ignore
-        local nav = function(number)
-            return function() ui.nav_file(number) end
-        end
 
-        vim.keymap.set('n', 'gh', function()
+        vim.keymap.set('n', '<leader>h', function()
             mark.add_file()
             print 'Marked current file.'
         end)
 
         vim.keymap.set('n', '<leader>jj', ui.toggle_quick_menu)
+        vim.keymap.set('n', '<leader>jk', function() ui.nav_next() end)
+        vim.keymap.set('n', '<leader>jl', function() ui.nav_prev() end)
 
-        vim.keymap.set('n', '<leader>jf', nav(1))
-        vim.keymap.set('n', '<leader>jd', nav(2))
-        vim.keymap.set('n', '<leader>js', nav(3))
-        vim.keymap.set('n', '<leader>ja', nav(4))
+        vim.keymap.set('n', "<C-h>", function() ui.nav_file(1) end)
+        vim.keymap.set('n', "<C-t>", function() ui.nav_file(2) end)
+        vim.keymap.set('n', "<C-n>", function() ui.nav_file(3) end)
+        vim.keymap.set('n', "<C-s>", function() ui.nav_file(4) end)
     end,
 }
