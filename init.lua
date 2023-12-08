@@ -96,6 +96,8 @@ require('lazy').setup({
       'folke/neodev.nvim',
     },
   },
+  -- learn neovim
+  { 'ThePrimeagen/vim-be-good' },
 
   {
     -- Autocompletion
@@ -120,10 +122,16 @@ require('lazy').setup({
 
     }
   },
-
+  {
+    "folke/persistence.nvim",
+    event = "BufReadPre", -- this will only start session saving when an actual file was opened
+    opts = {
+      -- add any custom options here
+    }
+  },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',  opts = {} },
+  { 'folke/which-key.nvim',    opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -190,22 +198,9 @@ require('lazy').setup({
     },
   },
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
-  {
-    "folke/noice.nvim",
-    event = "VeryLazy",
-    opts = {
-      -- add any options here
-    },
-    dependencies = {
-      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-      "MunifTanjim/nui.nvim",
-      -- OPTIONAL:
-      --   `nvim-notify` is only needed, if you want to use the notification view.
-      --   If not available, we use `mini` as the fallback
-      "rcarriga/nvim-notify",
-    }
-  },
+  { 'numToStr/Comment.nvim',  opts = {} },
+
+
 
   -- Fuzzy Finder (files, lsp, etc)
   {
@@ -328,16 +323,20 @@ ColorMyPencils()
 --
 -- custom mykeymaps
 
+--save
+vim.keymap.set('n', '<leader>scf', ':w<CR>', { desc = 'Save current File' })
+
 -- toogle zen mode
 vim.keymap.set('n', '<leader>nz', ':ZenMode<CR>')
-
+--run php files
+vim.keymap.set('n', '<leader><CR>', ':!php %<CR>', { desc = 'Run php Files' })
 -- retour dans le menu
-vim.keymap.set("n", "<leader>pv", ":Ex<CR>")
+vim.keymap.set("n", "<leader>pv", ":Ex<CR>", { desc = 'return to directory' })
 -- garde le focus au milieu lors de la recherche
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 vim.keymap.set("n", "<C-c", "<Esc>")
-vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
+vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { desc = 'Format document' })
 
 -- permet de déplacer une ligne en mode visual
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
@@ -368,24 +367,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
-require("noice").setup({
-  lsp = {
-    -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-    override = {
-      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-      ["vim.lsp.util.stylize_markdown"] = true,
-      ["cmp.entry.get_documentation"] = true,
-    },
-  },
-  -- you can enable a preset for easier configuration
-  presets = {
-    bottom_search = true,         -- use a classic bottom cmdline for search
-    command_palette = true,       -- position the cmdline and popupmenu together
-    long_message_to_split = true, -- long messages will be sent to a split
-    inc_rename = false,           -- enables an input dialog for inc-rename.nvim
-    lsp_doc_border = false,       -- add a border to hover docs and signature help
-  },
-})
 
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
@@ -465,7 +446,7 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { 'c', 'cpp', 'go', 'php', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash', 'regex', 'markdown', 'markdown_inline' },
+    ensure_installed = { 'c', 'cpp', 'go', 'sql', 'php', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash', 'regex', 'markdown', 'markdown_inline' },
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = true,
@@ -617,8 +598,11 @@ local servers = {
   -- gopls = {},
   -- pyright = {},
   -- rust_analyzer = {},
-  -- tsserver = {},
-  -- html = { filetypes = { 'html', 'twig', 'hbs'} },
+  cssls = {},
+  emmet_ls = {},
+  tsserver = {},
+  html = { filetypes = { 'html', 'twig', 'hbs' } },
+  intelephense = {},
 
   lua_ls = {
     Lua = {
